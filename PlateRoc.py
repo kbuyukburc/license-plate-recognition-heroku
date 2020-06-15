@@ -169,12 +169,11 @@ vehicle_threshold = .5
 vehicle_weights = 'vehicle-detector/yolo-voc.weights'
 vehicle_netcfg  = 'vehicle-detector/yolo-voc.cfg'
 
-# Load the model
-vehicle_net = cv.dnn.readNetFromDarknet(vehicle_netcfg, vehicle_weights)
-vehicle_net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
-vehicle_net.setPreferableTarget(cv.dnn.DNN_TARGET_CPU)
-
 def vehicle_detection(frame):
+  # Load the model
+  vehicle_net = cv.dnn.readNetFromDarknet(vehicle_netcfg, vehicle_weights)
+  vehicle_net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
+  vehicle_net.setPreferableTarget(cv.dnn.DNN_TARGET_CPU)
 
   # Create a 4D blob from a frame.
   blob = cv.dnn.blobFromImage(frame, 1/255, (416, 416), [0,0,0], 1, crop=False)
@@ -204,7 +203,7 @@ def vehicle_detection(frame):
         Lcars.append(label)
         Icar = crop_region(frame,label)
         Icars.append(Icar.astype(np.uint8))
-
+  del vehicle_net
   return Icars, Lcars 
 
 
