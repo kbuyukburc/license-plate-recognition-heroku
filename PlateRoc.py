@@ -1,3 +1,7 @@
+import os
+os.system('ls -l')
+os.system('sh download.sh')
+
 #@title
 # Get the names of the output layers
 def getOutputsNames(net):
