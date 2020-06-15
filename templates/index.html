@@ -1,0 +1,134 @@
+<style>
+.button {
+  border: none;
+  color: white;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+.red {background-color: #f44336;}
+.green{background-color: #4CAF50;}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+/* Create two equal columns that sits next to each other */
+.column {
+  flex: 50%;
+  padding: 0 4px;  
+}
+
+.column img {
+  margin-top: 8px;
+  vertical-align: middle;  
+}
+
+div {
+  resize: horizontal;
+  overflow: auto;
+    }
+
+.box1 {width:512px; height:512px;}
+/*
+img{
+    width:512px;
+    height:512px;
+}
+*/
+
+</style>
+
+<!--- JQuery library to make http request --->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!--- Main javascript code --->
+<script type="text/javascript">
+        function upload() {
+        
+        // Convert canvas to jpeg image
+        img = document.getElementById('inImg');
+        //var dataURL = document.getElementById('inImg').src;
+        var dataURL = getDataUrl(img)
+        //var dataURL = img.toDataURL('image/jpeg', 0.8);
+
+        // Call the server with the encoded image data. 
+        $.ajax({
+            type: "POST",
+            url: "/upload", 
+            data: {"data":dataURL},
+            success: function(data) {
+                console.log(data)
+                var json = JSON.parse(data)
+                console.log(json)
+                //Set Output Image
+                document.getElementById('output')                
+                .setAttribute(
+                  'src', 'data:image/jpeg;base64,' + json.Data
+                );
+                //Alert Info
+                alert("Detected Vehicle " + json.Vehicle_Detected + "\n" + json.Plates)                
+            },
+            error: function(data) 
+            {
+                console.log("Upload failed")
+            }
+        }).done(function() {
+    console.log("Sent");
+  });
+
+        
+    }
+    
+    var loadFile = function(event) {
+	    var image = document.getElementById('inImg');
+    	image.src = URL.createObjectURL(event.target.files[0]);
+    };
+
+    function getDataUrl(img) {
+      // Create canvas
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      // Set width and height
+      //canvas.width = 1024
+      //canvas.height = 1024
+      canvas.width = img.width;
+      canvas.height = img.height;
+      // Draw the image
+      ctx.drawImage(img, 0, 0);
+      return canvas.toDataURL('image/jpeg');
+  }
+  
+  $( window ).on( "load", function() {
+    upload();  
+  });
+  
+</script>
+
+
+
+<html>
+
+<div class="row">
+    <div class="column">
+        <img src="/static/test_img.jpg" id="inImg">
+        
+    </div>
+    <div class="column">
+      <input type="file"  accept="image/*" name="image" id="file"  onchange="loadFile(event)" >
+      <input type="button" value="Recognize Plates" id="clr" size="30" onclick="upload()" class="green button">
+        <!--<img src="/static/test_img.jpg" id="output">-->
+    </div>
+    <div class="column">
+      <img src="/static/test_img.jpg" id="output">
+    </div>
+</div>
+</html>
+
+
