@@ -6,6 +6,9 @@ import sys
 import json
 import PlateRoc
 
+import os
+os.system('ls -l')
+os.system('sh download.sh')
 
 # Define App
 app = Flask(__name__,template_folder="templates")
