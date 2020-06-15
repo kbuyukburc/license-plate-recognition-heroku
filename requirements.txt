@@ -3,4 +3,4 @@ gunicorn
 numpy
 opencv-contrib-python-headless
 Keras
-tensorflow==2.1.0
+tensorflow-cpu
