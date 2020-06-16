@@ -535,39 +535,3 @@ if  __name__ == '__main__':
   plt.imshow(img[:,:,::-1])
   plt.show()
   
-
-
-if __name__ == '__main2__':
-  # Import necessary modules
-  import numpy as np
-  import cv2 as cv
-  # read test image
-  test_img = cv.imread('test_img.jpg')
-  # detect cars
-  Icars, Lcars = vehicle_detection(test_img)
-  print('# vehicle detected: {}'.format(len(Icars)))
-  # for each detected car in test image
-  for Icar, Lcar in zip(Icars, Lcars):
-    # draw car bounding box on test image
-    draw_label(test_img,Lcar,color=(0,255,255),thickness=3)
-    # detect LP in detected car
-    Llps, Ilps, elapsed = lp_detection(Icar)   
-    # for each detected LP in detected car image
-    for Llp, Ilp in zip(Llps, Ilps):
-      # draw LP bounding box on test image
-      pts = Llp.pts*Lcar.wh().reshape(2,1) + Lcar.tl().reshape(2,1)
-      ptspx = pts*np.array(test_img.shape[1::-1],dtype=float).reshape(2,1)
-      draw_losangle(test_img,ptspx,color=(0,0,255),thickness=3)
-      # Recognize characters
-      lp_str = lp_ocr(Ilp)
-      # write text on test image
-      llp = Label(0,tl=pts.min(1),br=pts.max(1))
-      write2img(test_img,llp,lp_str)
-
-  # Import necessary modules
-  import matplotlib
-  import matplotlib.pyplot as plt
-  # Display inference
-  fig=plt.figure(figsize=(10, 10))
-  plt.imshow(test_img[:,:,::-1])
-  plt.show()
